@@ -99,6 +99,7 @@
     </nav>
 
     <header class="relative w-full h-[400px] md:h-[550px] flex items-center justify-center overflow-hidden">
+        <!-- 주의: 나중에는 이 배경 이미지를 로컬 경로(예: ./images/hero-bg.jpg)로 변경하는 것을 권장해 -->
         <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-90" style="background-image: url('https://pbs.twimg.com/media/G-XvDjdboAAEwI6.jpg'); background-position: center bottom;"></div>
         
         <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-[#0A0A0A]"></div>
@@ -156,7 +157,7 @@
                 </div>
             </div>
 
-            <!-- [NEW] 신규 비즈니스 모델 (조커 픽) 아이디어 연구소 -->
+            <!-- 신규 비즈니스 모델 (조커 픽) 아이디어 연구소 -->
             <div class="mt-12">
                 <div class="flex items-center gap-4 mb-6">
                     <h3 class="text-xl font-bold text-gray-300 italic">🃏 조커 픽 (New Meta) 추가</h3>
@@ -172,7 +173,7 @@
                     <button id="btnAddJoker" class="self-end bg-[#222] hover:bg-[#00A896] text-white font-bold px-6 py-2 rounded transition-colors text-xs tracking-widest uppercase">추가하기</button>
                 </div>
 
-                <!-- 아이디어 리스트 출력 영역 (기존 핵심 픽과 동일한 3열 그리드) -->
+                <!-- 아이디어 리스트 출력 영역 -->
                 <div id="jokerList" class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- JS로 동적 생성됨 -->
                 </div>
@@ -194,20 +195,20 @@
                             <li>• 청년창업세액감면 적용 시 5년간 소득세 50~100% 절세.</li>
                         </ul>
                     </div>
-                   <div class="p-6 hover:bg-[#1A1A1A] transition-colors flex flex-col h-full">
-    <h4 class="text-t1-gold font-bold mb-2 flex justify-between items-center">
-        <span>🛡️ 바론 버프 (정부지원 리스트)</span>
-    </h4>
-    <!-- 입력창 -->
-    <div class="flex gap-2 mb-3">
-        <input type="text" id="govLinkInput" placeholder="공고명 또는 링크" class="w-full bg-black border border-[#333] text-white text-xs rounded p-2 focus:outline-none focus:border-[#D4AF37] transition-colors">
-        <button id="btnAddGovLink" class="bg-[#333] hover:bg-[#D4AF37] text-white hover:text-black text-xs font-bold px-3 py-2 rounded transition-colors whitespace-nowrap">추가</button>
-    </div>
-    <!-- 리스트 출력 영역 -->
-    <ul id="govLinkList" class="text-sm text-gray-400 space-y-2 overflow-y-auto custom-scrollbar flex-grow max-h-32">
-        <!-- JS로 동적 생성됨 -->
-    </ul>
-</div>
+                    <div class="p-6 hover:bg-[#1A1A1A] transition-colors flex flex-col h-full">
+                        <h4 class="text-t1-gold font-bold mb-2 flex justify-between items-center">
+                            <span>🛡️ 바론 버프 (정부지원 리스트)</span>
+                        </h4>
+                        <!-- 입력창 -->
+                        <div class="flex gap-2 mb-3">
+                            <input type="text" id="govLinkInput" placeholder="공고명 또는 링크" class="w-full bg-black border border-[#333] text-white text-xs rounded p-2 focus:outline-none focus:border-[#D4AF37] transition-colors">
+                            <button id="btnAddGovLink" class="bg-[#333] hover:bg-[#D4AF37] text-white hover:text-black text-xs font-bold px-3 py-2 rounded transition-colors whitespace-nowrap">추가</button>
+                        </div>
+                        <!-- 리스트 출력 영역 -->
+                        <ul id="govLinkList" class="text-sm text-gray-400 space-y-2 overflow-y-auto custom-scrollbar flex-grow max-h-32">
+                            <!-- JS로 동적 생성됨 -->
+                        </ul>
+                    </div>
                     <div class="p-6 hover:bg-[#1A1A1A] transition-colors">
                         <h4 class="text-white font-bold mb-2">🗺️ 맵 컨트롤 (Notion OS)</h4>
                         <ul class="text-sm text-gray-400 space-y-2">
@@ -256,7 +257,7 @@
             </div>
 
             <div id="quest-container" class="grid grid-cols-1 lg:grid-cols-2 gap-6 relative z-0">
-                </div>
+            </div>
         </section>
 
     </main>
@@ -266,6 +267,17 @@
     </footer>
 
     <script>
+        // 안전하게 로컬스토리지를 불러오는 헬퍼 함수
+        function getSafeLocalStorage(key, defaultValue) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : defaultValue;
+            } catch (error) {
+                console.error(`데이터 파싱 에러 (${key}). 기본값으로 초기화합니다.`, error);
+                return defaultValue;
+            }
+        }
+
         // --- 1. T1 감성 퀘스트 데이터 ---
         const questData = [
             {
@@ -310,7 +322,7 @@
             }
         ];
 
-        let savedQuests = JSON.parse(localStorage.getItem('t1LimitlessPlannerData')) || {};
+        let savedQuests = getSafeLocalStorage('t1LimitlessPlannerData', {});
 
         const tiers = [
             { threshold: 0, name: "UNRANKED", color: "#666" }, 
@@ -429,16 +441,16 @@
         }
 
         document.addEventListener('DOMContentLoaded', renderQuests);
-// --- [NEW] 바론 버프(정부지원사업) 메모장 로직 ---
+
+        // --- 바론 버프(정부지원사업) 메모장 로직 ---
         const govLinkInput = document.getElementById('govLinkInput');
         const btnAddGovLink = document.getElementById('btnAddGovLink');
         const govLinkList = document.getElementById('govLinkList');
 
-        // 로컬스토리지에서 불러오기 (기본값 세팅)
-        let govLinks = JSON.parse(localStorage.getItem('t1GovLinksData')) || [
+        let govLinks = getSafeLocalStorage('t1GovLinksData', [
             { id: 1, text: "마곡 크리에이터미디어 콤플렉스 (최대 6천)" },
             { id: 2, text: "1인 창조기업 지원센터 입주 노리기" }
-        ];
+        ]);
 
         function renderGovLinks() {
             govLinkList.innerHTML = '';
@@ -448,11 +460,18 @@
                 
                 const span = document.createElement('span');
                 span.className = "break-all pr-2";
-                // http로 시작하면 클릭 가능한 링크로 변환!
+                
+                // 보안을 위해 XSS 방지 (innerHTML 대신 textContent 및 createElement 사용)
                 if(link.text.startsWith('http')) {
-                    span.innerHTML = `• <a href="${link.text}" target="_blank" class="text-[#D4AF37] hover:underline">${link.text}</a>`;
+                    span.textContent = '• ';
+                    const aTag = document.createElement('a');
+                    aTag.href = link.text;
+                    aTag.target = "_blank";
+                    aTag.className = "text-[#D4AF37] hover:underline";
+                    aTag.textContent = link.text;
+                    span.appendChild(aTag);
                 } else {
-                    span.innerHTML = `• ${link.text}`;
+                    span.textContent = `• ${link.text}`;
                 }
 
                 // 삭제 버튼
@@ -489,32 +508,32 @@
             if(e.key === 'Enter') btnAddGovLink.click();
         });
 
-        // 초기 화면에 그려주기
         renderGovLinks();
 
-        // --- [NEW] 조커 픽(신규 아이디어) 리스트 관리 로직 ---
+        // --- 조커 픽(신규 아이디어) 리스트 관리 로직 ---
         const jokerTitleInput = document.getElementById('jokerTitleInput');
         const jokerDescInput = document.getElementById('jokerDescInput');
         const btnAddJoker = document.getElementById('btnAddJoker');
         const jokerList = document.getElementById('jokerList');
 
-        // 로컬스토리지에서 불러오기 (없으면 빈 배열)
-        let jokerPicks = JSON.parse(localStorage.getItem('t1JokerPicksData')) || [];
+        let jokerPicks = getSafeLocalStorage('t1JokerPicksData', []);
 
         function renderJokerPicks() {
             jokerList.innerHTML = '';
             
             if (jokerPicks.length === 0) {
-                jokerList.innerHTML = '<div class="col-span-1 md:col-span-3 text-gray-600 text-xs italic text-center py-10 border border-dashed border-[#222] rounded">아직 등록된 조커 픽이 없어. 너의 번뜩이는 아이디어를 추가해 봐!</div>';
+                const emptyMsg = document.createElement('div');
+                emptyMsg.className = "col-span-1 md:col-span-3 text-gray-600 text-xs italic text-center py-10 border border-dashed border-[#222] rounded";
+                emptyMsg.textContent = "아직 등록된 조커 픽이 없어. 너의 번뜩이는 아이디어를 추가해 봐!";
+                jokerList.appendChild(emptyMsg);
                 return;
             }
 
             jokerPicks.forEach(pick => {
                 const card = document.createElement('div');
-                // 핵심 픽과 동일한 카드 디자인 적용!
                 card.className = "content-card border border-[#333] border-t-4 border-t-[#00A896] p-6 rounded-lg h-full flex flex-col relative group bg-[#141414]";
                 
-                // 삭제 버튼 (마우스 오버 시 우측 상단에 등장)
+                // 삭제 버튼
                 const delBtn = document.createElement('button');
                 delBtn.className = "absolute top-4 right-4 text-[#E3002B] opacity-0 group-hover:opacity-100 transition-opacity text-xs font-bold px-2 py-1 bg-black border border-[#333] rounded hover:border-[#E3002B] hover:bg-[#E3002B] hover:text-white flex-shrink-0 z-10";
                 delBtn.textContent = "삭제";
@@ -528,12 +547,12 @@
                 iconDiv.className = "text-3xl mb-4";
                 iconDiv.textContent = "🃏";
 
-                // 타이틀
+                // 타이틀 (보안을 위해 textContent 사용)
                 const titleH3 = document.createElement('h3');
-                titleH3.className = "text-xl font-bold text-white mb-2 pr-10"; // 삭제 버튼 공간 확보
+                titleH3.className = "text-xl font-bold text-white mb-2 pr-10";
                 titleH3.textContent = pick.title;
 
-                // 내용
+                // 내용 (보안을 위해 textContent 사용)
                 const descDiv = document.createElement('div');
                 descDiv.className = "text-sm text-gray-400 flex-grow space-y-2 whitespace-pre-wrap leading-relaxed";
                 descDiv.textContent = pick.desc;
@@ -563,14 +582,13 @@
             saveAndRenderJokerPicks();
         });
 
-        // 텍스트 영역에서 Ctrl+Enter 누르면 추가되게 설정
+        // 텍스트 영역에서 Ctrl+Enter 누르면 추가
         jokerDescInput.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'Enter') {
                 btnAddJoker.click();
             }
         });
 
-        // 초기 화면에 조커 픽 그려주기
         renderJokerPicks();
 
     </script>
