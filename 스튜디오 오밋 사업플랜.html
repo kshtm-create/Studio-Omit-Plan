@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limitless - Road to Worlds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Typography: 강렬하고 모던한 느낌 */
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #0A0A0A; /* T1 Black */
+            color: #E5E5E5; /* Light Gray for readability */
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* T1 Brand Colors */
+        .t1-red { color: #E3002B; }
+        .bg-t1-red { background-color: #E3002B; }
+        .border-t1-red { border-color: #E3002B; }
+        
+        .t1-gold { color: #D4AF37; }
+        .border-t1-gold { border-color: #D4AF37; }
+
+        /* Hero Image Text Shadow */
+        .hero-text-shadow {
+            text-shadow: 0 4px 30px rgba(227, 0, 43, 0.8), 0 2px 10px rgba(0,0,0,0.8);
+        }
+
+        /* Quest & Content Item Box */
+        .quest-item, .content-card {
+            transition: all 0.2s ease-in-out;
+            background-color: #141414;
+        }
+        .quest-item:hover, .content-card:hover {
+            transform: translateY(-2px);
+            border-color: #E3002B;
+            background-color: #1A1A1A;
+        }
+        
+        /* 완료된 퀘스트 스타일 */
+        .quest-completed {
+            background-color: #000000 !important;
+            border-color: #333333 !important;
+            opacity: 0.5;
+        }
+        .quest-completed .quest-title {
+            color: #666666;
+            text-decoration: line-through;
+        }
+        .quest-completed .quest-desc {
+            display: none;
+        }
+
+        /* Custom Checkbox (T1 Style) */
+        .t1-check {
+            transition: all 0.2s ease;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
+        .quest-completed .t1-check {
+            background-color: #E3002B;
+            border-color: #E3002B;
+        }
+        .check-mark {
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .quest-completed .check-mark {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* EXP Bar */
+        #exp-fill {
+            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: linear-gradient(90deg, #E3002B, #D4AF37);
+            box-shadow: 0 0 15px rgba(227, 0, 43, 0.4);
+        }
+
+        /* Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #0A0A0A; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #333333; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #E3002B; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col relative overflow-x-hidden">
+
+    <nav class="absolute w-full z-20 top-0">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="font-black text-2xl tracking-tighter text-white uppercase italic drop-shadow-md">
+                Studio <span class="t1-red">Omit</span>
+            </div>
+            <div class="text-xs font-bold tracking-widest text-gray-200 drop-shadow-md">PROVE THEM WRONG.</div>
+        </div>
+        <div class="h-1 w-full bg-t1-red/80"></div>
+    </nav>
+
+    <header class="relative w-full h-[400px] md:h-[550px] flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-90" style="background-image: url('https://pbs.twimg.com/media/G-XvDjdboAAEwI6.jpg'); background-position: center bottom;"></div>
+        
+        <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-[#0A0A0A]"></div>
+        
+        <div class="relative z-10 text-center px-4 mt-80">
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tighter mb-4 hero-text-shadow">
+                <br class="md:hidden"> Studio Omit
+            </h1>
+            <p class="text-base md:text-lg font-bold text-gray-300 tracking-widest drop-shadow-lg">
+                Omit the words, Trigger the action
+            </p>
+        </div>
+    </header>
+
+    <main class="relative z-10 max-w-6xl mx-auto px-4 py-10 flex-grow space-y-16">
+
+        <section>
+            <div class="flex items-center gap-4 mb-6">
+                <h2 class="text-2xl font-black text-white tracking-tighter uppercase italic">핵심 챔피언 폭 (Business Models)</h2>
+                <div class="flex-grow h-px bg-[#333]"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- 카드 1: 시그니처 픽 -->
+                <div class="content-card border border-[#333] border-t-4 border-t-t1-red p-6 rounded-lg h-full flex flex-col">
+                    <div class="text-3xl mb-4">👑</div>
+                    <h3 class="text-xl font-bold text-white mb-2">시그니처 픽: B2B 다국어 영상</h3>
+                    <div class="text-sm text-gray-400 flex-grow space-y-2">
+                        <p><strong class="text-t1-red">목표:</strong> 고수익 하이엔드 시장 장악</p>
+                        <p>1회 스튜디오 실사 촬영 후, AI를 활용해 <strong>다국어 음성 및 현지화 베리에이션</strong> 무한 생성.</p>
+                        <p>타겟: 글로벌 진출을 노리는 기술 기반 스타트업.</p>
+                    </div>
+                </div>
+
+                <!-- 카드 2: 국밥 픽 -->
+                <div class="content-card border border-[#333] border-t-4 border-t-t1-gold p-6 rounded-lg h-full flex flex-col">
+                    <div class="text-3xl mb-4">🛡️</div>
+                    <h3 class="text-xl font-bold text-white mb-2">국밥 픽: 숏폼 커머스 월간 구독</h3>
+                    <div class="text-sm text-gray-400 flex-grow space-y-2">
+                        <p><strong class="text-t1-gold">목표:</strong> 주기적 현금 흐름(MRR) 창출</p>
+                        <p>월정액으로 주 3회 숏폼 기획/촬영/편집을 대행하는 리테이너(Retainer) 모델.</p>
+                        <p><strong>핵심 전략:</strong> 월 1회 '스튜디오 데이(Batch Shooting)' 지정으로 효율 극대화.</p>
+                    </div>
+                </div>
+
+                <!-- 카드 3: 패시브 픽 -->
+                <div class="content-card border border-[#333] border-t-4 border-t-gray-500 p-6 rounded-lg h-full flex flex-col">
+                    <div class="text-3xl mb-4">💰</div>
+                    <h3 class="text-xl font-bold text-white mb-2">패시브 픽: AI 숏폼 제휴 마케팅</h3>
+                    <div class="text-sm text-gray-400 flex-grow space-y-2">
+                        <p><strong class="text-gray-300">목표:</strong> 진입장벽 없는 무자본 파이프라인</p>
+                        <p>렌더링 대기 시간에 AI 기반 공장형 쇼츠를 생산해 제휴 수익 창출.</p>
+                        <p>알고리즘 어뷰징 회피를 위해 스튜디오 오리지널 B-Roll과 믹스.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- [NEW] 신규 비즈니스 모델 (조커 픽) 아이디어 연구소 -->
+            <div class="mt-12">
+                <div class="flex items-center gap-4 mb-6">
+                    <h3 class="text-xl font-bold text-gray-300 italic">🃏 조커 픽 (New Meta) 추가</h3>
+                    <div class="flex-grow h-px bg-[#333] border-dashed"></div>
+                </div>
+                
+                <!-- 아이디어 입력 창 -->
+                <div class="bg-[#111] border border-[#333] border-dashed p-6 rounded-lg w-full flex flex-col gap-4 mb-8">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <input type="text" id="jokerTitleInput" class="md:w-1/3 bg-[#0A0A0A] border border-[#222] rounded p-3 text-sm text-white focus:outline-none focus:border-[#00A896] transition-colors" placeholder="조커 픽 이름 (예: 무자본 전자책 판매)">
+                        <textarea id="jokerDescInput" rows="2" class="md:w-2/3 bg-[#0A0A0A] border border-[#222] rounded p-3 text-sm text-gray-300 focus:outline-none focus:border-[#00A896] transition-colors resize-none custom-scrollbar" placeholder="목표: 새로운 파이프라인 구축&#10;세부 내용: 주말을 활용해 50장 분량 작성 후 크몽에 등록..."></textarea>
+                    </div>
+                    <button id="btnAddJoker" class="self-end bg-[#222] hover:bg-[#00A896] text-white font-bold px-6 py-2 rounded transition-colors text-xs tracking-widest uppercase">추가하기</button>
+                </div>
+
+                <!-- 아이디어 리스트 출력 영역 (기존 핵심 픽과 동일한 3열 그리드) -->
+                <div id="jokerList" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- JS로 동적 생성됨 -->
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="flex items-center gap-4 mb-6">
+                <h2 class="text-2xl font-black text-white tracking-tighter uppercase italic">초반 빌드업 & 매크로 (Ops & Budget)</h2>
+                <div class="flex-grow h-px bg-[#333]"></div>
+            </div>
+
+            <div class="bg-[#111] border border-[#333] rounded-lg overflow-hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[#333]">
+                    <div class="p-6 hover:bg-[#1A1A1A] transition-colors">
+                        <h4 class="text-t1-red font-bold mb-2">📜 룬 세팅 (세무/법무)</h4>
+                        <ul class="text-sm text-gray-400 space-y-2">
+                            <li>• 업종코드 <strong>921505 (미디어콘텐츠 창작업)</strong> 등록 필수.</li>
+                            <li>• 청년창업세액감면 적용 시 5년간 소득세 50~100% 절세.</li>
+                        </ul>
+                    </div>
+                   <div class="p-6 hover:bg-[#1A1A1A] transition-colors flex flex-col h-full">
+    <h4 class="text-t1-gold font-bold mb-2 flex justify-between items-center">
+        <span>🛡️ 바론 버프 (정부지원 리스트)</span>
+    </h4>
+    <!-- 입력창 -->
+    <div class="flex gap-2 mb-3">
+        <input type="text" id="govLinkInput" placeholder="공고명 또는 링크" class="w-full bg-black border border-[#333] text-white text-xs rounded p-2 focus:outline-none focus:border-[#D4AF37] transition-colors">
+        <button id="btnAddGovLink" class="bg-[#333] hover:bg-[#D4AF37] text-white hover:text-black text-xs font-bold px-3 py-2 rounded transition-colors whitespace-nowrap">추가</button>
+    </div>
+    <!-- 리스트 출력 영역 -->
+    <ul id="govLinkList" class="text-sm text-gray-400 space-y-2 overflow-y-auto custom-scrollbar flex-grow max-h-32">
+        <!-- JS로 동적 생성됨 -->
+    </ul>
+</div>
+                    <div class="p-6 hover:bg-[#1A1A1A] transition-colors">
+                        <h4 class="text-white font-bold mb-2">🗺️ 맵 컨트롤 (Notion OS)</h4>
+                        <ul class="text-sm text-gray-400 space-y-2">
+                            <li>• CRM(영업 파이프라인), 에셋 라이브러리 연동.</li>
+                            <li>• 클라이언트 전용 대시보드 제공으로 전문성 어필.</li>
+                        </ul>
+                    </div>
+                    <div class="p-6 hover:bg-[#1A1A1A] transition-colors">
+                        <h4 class="text-gray-300 font-bold mb-2">💰 골드 관리 (1천만원 예산)</h4>
+                        <ul class="text-sm text-gray-400 space-y-2">
+                            <li>• AI/SW 구독료: 180만</li>
+                            <li>• 마케팅/행정비: 340만</li>
+                            <li>• <strong>비상 런웨이(예비비): 400만+</strong></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mt-20 mb-20">
+            <div class="flex items-center gap-4 mb-6">
+                <h2 class="text-3xl font-black text-white tracking-tighter uppercase italic">프리시즌 퀘스트 (Action Plan)</h2>
+                <div class="flex-grow h-px bg-[#333]"></div>
+            </div>
+
+            <div class="bg-[#111] border border-[#333] border-t-4 border-t-t1-red p-6 rounded-xl shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center gap-8 mb-6 z-10">
+                <div class="flex flex-col items-center justify-center min-w-[220px] bg-black p-6 rounded-lg border border-[#222] shadow-inner">
+                    <div class="text-gray-500 text-xs tracking-widest mb-2 font-bold">CURRENT STATUS</div>
+                    <div id="tier-name" class="text-4xl font-black text-white uppercase tracking-tighter mb-2 italic transition-all duration-300">UNRANKED</div>
+                    <div class="bg-[#222] t1-red font-bold tracking-widest text-sm px-4 py-1 rounded w-full text-center border border-[#333]" id="progress-text">0 / 16 CLEAR</div>
+                </div>
+
+                <div class="flex-grow w-full">
+                    <h2 class="text-2xl font-black text-white mb-1 uppercase tracking-tight">Studio Omit 티어 현황</h2>
+                    <p class="text-sm text-gray-400 mb-5">
+                        티어와 경험치가 실시간으로 오릅니다. 스스로 증명해 보세요!
+                    </p>
+                    <div class="flex justify-between text-xs font-bold text-gray-300 mb-2 tracking-widest uppercase">
+                        <span>Championship Progress</span>
+                        <span id="exp-percentage" class="t1-red transition-all duration-300 font-bold">0%</span>
+                    </div>
+                    <div class="h-6 bg-black rounded p-1 w-full relative border border-[#333]">
+                        <div id="exp-fill" class="h-full rounded" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="quest-container" class="grid grid-cols-1 lg:grid-cols-2 gap-6 relative z-0">
+                </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-black py-10 border-t border-[#222] text-center text-gray-600 text-xs tracking-widest uppercase">
+        <p>2026 사업계획서 - 증명하세요.</p>
+    </footer>
+
+    <script>
+        // --- 1. T1 감성 퀘스트 데이터 ---
+        const questData = [
+            {
+                phaseTitle: "LCK 시즌 (10월) - 기초 체력 및 인프라",
+                theme: { bg: "bg-[#1A1A1A]", text: "text-white", border: "border-gray-500" }, 
+                quests: [
+                    { id: "t1_q1", title: "업종코드 결정 및 사업자 등록 (921505)", desc: "💡 첫 단추가 핵심! '미디어콘텐츠 창작업'으로 등록해서 청년세액감면 및 매입세액 공제 효과를 받아내." },
+                    { id: "t1_q2", title: "상호명 픽 & 단가표 세팅", desc: "💡 브랜드 명과 단가표를 확실하게 세팅해서 초기 타겟층을 공략할 준비를 마쳐." },
+                    { id: "t1_q3", title: "기존 작업물 중 '슈퍼 플레이'만 업로드", desc: "💡 매드무비 만들 때처럼, 딱 봐도 피지컬 지리는 퀄리티의 영상 3~5개만 노션 포폴 맨 앞에 꽂아둬." },
+                    { id: "t1_q4", title: "노션(Notion) OS (CRM/에셋) 초기 셋업", desc: "💡 단순 웹페이지가 아냐. 나중에 고객 리스트 관리하고 에셋 모아둘 시스템 뼈대를 미리 파놔." }
+                ]
+            },
+            {
+                phaseTitle: "MSI (11월) - 신규 메타(장비/AI) 장착",
+                theme: { bg: "bg-[#1A1A1A]", text: "text-white", border: "border-[#555]" }, 
+                quests: [
+                    { id: "t1_q5", title: "드론 4종 룬 장착 및 매빅 3급 서치", desc: "💡 공중 시야 확보용. 주말에 4종 인강 듣고, 당근마켓에서 상태 좋은 중고 매빅을 주워와." },
+                    { id: "t1_q6", title: "정부 지원 사업(바론) 리스트업", desc: "💡 마곡 크리에이터 콤플렉스(6천만 원 지원) 등 내년 초 열릴 공고를 캘린더에 박아둬." },
+                    { id: "t1_q7", title: "GenAI, Vrew 등 AI 툴 구독 및 마스터", desc: "💡 1인 제작 번아웃 방지용 필수템. 기획부터 컷편집, 화질 복원(Topaz)까지 손에 익혀." },
+                    { id: "t1_q8", title: "스튜디오 공간 대여 플랫폼 등록", desc: "💡 나 없을 때도 골드 벌어다 주는 패시브 스킬 켜는 거야. 스페이스클라우드 호스트 가입!" }
+                ]
+            },
+            {
+                phaseTitle: "EWC (12월) - 본격적인 교전 준비",
+                theme: { bg: "bg-[#2A0808]", text: "t1-red", border: "border-t1-red" }, 
+                quests: [
+                    { id: "t1_q9", title: "타겟 고객(스타트업 등) 100곳 시야 확보", desc: "💡 1월에 영업 돌릴 곳들 미리 찾기. 네이버 지도 켜고 돈 많아 보이는 곳 위주로 100곳 리스트업 해." },
+                    { id: "t1_q10", title: "영업용 콜드메일 템플릿 작성", desc: "💡 1인 제작+스튜디오 보유의 강점(가성비)을 꽉꽉 눌러 담은 메일 본문 뼈대를 미리 장전해둬." },
+                    { id: "t1_q11", title: "다국어 B2B 샘플 영상 제작", desc: "💡 내 스튜디오에서 찍은 영상에 AI 입혀서 다국어 변환 샘플(하이엔드 영업용) 하나 뽑아놔." },
+                    { id: "t1_q12", title: "사업자용 인스타그램/SNS 채널 개설", desc: "💡 빈 깡통으로 둘 순 없지. 작업한 샘플이랑 내 스튜디오 예쁜 사진들로 피드를 미리 좀 채워놔." }
+                ]
+            },
+            {
+                phaseTitle: "WORLDS 결승 (1월) - 런칭",
+                theme: { bg: "bg-[#221A00]", text: "t1-gold", border: "border-t1-gold" }, 
+                quests: [
+                    { id: "t1_q13", title: "사업자 통장 개설 & 세금계산서 세팅", desc: "💡 B2B 뛰려면 세금계산서 발행은 기본. 기업 돈 받을 통장 확실하게 열어둬." },
+                    { id: "t1_q14", title: "하루 10통씩 이메일 딜링 (발송 시작)", desc: "💡 12월에 모아둔 100곳 리스트에 매일 10통씩 쏴봐. 찌르면 무조건 킬각(답장) 뜬다." },
+                    { id: "t1_q15", title: "🏆 유튜브 리테이너 첫 1호 계약 (국밥 픽)", desc: "💡 매달 150만 원씩 꽂히는 고정 계약 하나 따자. 스튜디오 데이(Batch) 전략으로 꼬셔봐." },
+                    { id: "t1_q16", title: "🏆 하이엔드 B2B 영상 수주 (시그니처 픽)", desc: "💡 넥서스 파괴! 객단가 높은 결합 홍보 영상 하나 물어서 월즈 우승 가자!" }
+                ]
+            }
+        ];
+
+        let savedQuests = JSON.parse(localStorage.getItem('t1LimitlessPlannerData')) || {};
+
+        const tiers = [
+            { threshold: 0, name: "UNRANKED", color: "#666" }, 
+            { threshold: 1, name: "IRON", color: "#888" },     
+            { threshold: 3, name: "BRONZE", color: "#A57164" },   
+            { threshold: 5, name: "SILVER", color: "#C0C0C0" },   
+            { threshold: 8, name: "GOLD", color: "#D4AF37" },     
+            { threshold: 11, name: "PLATINUM", color: "#00A896" }, 
+            { threshold: 13, name: "DIAMOND", color: "#5F8BCB" }, 
+            { threshold: 15, name: "MASTER", color: "#9F45B0" }, 
+            { threshold: 16, name: "WORLDS MVP 🏆", color: "#E3002B" } 
+        ];
+
+        function renderQuests() {
+            const container = document.getElementById('quest-container');
+            container.innerHTML = '';
+            let totalQuests = 0;
+            let completedQuests = 0;
+
+            questData.forEach(phase => {
+                const col = document.createElement('div');
+                col.className = "bg-[#111] border border-[#222] rounded-xl overflow-hidden flex flex-col h-full shadow-lg";
+
+                const phaseHeaderWrapper = document.createElement('div');
+                phaseHeaderWrapper.className = `p-4 border-b border-[#333] ${phase.theme.bg}`;
+                const phaseHeader = document.createElement('h3');
+                phaseHeader.className = `text-lg font-black tracking-tighter uppercase italic ${phase.theme.text}`;
+                phaseHeader.textContent = phase.phaseTitle;
+                phaseHeaderWrapper.appendChild(phaseHeader);
+                col.appendChild(phaseHeaderWrapper);
+
+                const questList = document.createElement('div');
+                questList.className = "p-4 space-y-3 flex-grow";
+
+                phase.quests.forEach(quest => {
+                    totalQuests++;
+                    const isCompleted = savedQuests[quest.id] === true;
+                    if (isCompleted) completedQuests++;
+
+                    const card = document.createElement('div');
+                    card.className = `quest-item border border-[#333] border-l-4 ${phase.theme.border} p-4 rounded-lg cursor-pointer flex items-start group ${isCompleted ? 'quest-completed' : ''}`;
+                    card.onclick = () => toggleQuest(quest.id, card);
+
+                    const checkWrapper = document.createElement('div');
+                    checkWrapper.className = "flex-shrink-0 mr-4 mt-0.5";
+                    const checkGem = document.createElement('div');
+                    checkGem.className = "t1-check w-5 h-5 border-2 border-[#555] rounded-sm flex items-center justify-center bg-[#0A0A0A]";
+                    const checkMark = document.createElement('span');
+                    checkMark.className = "check-mark text-white font-bold text-xs pointer-events-none";
+                    checkMark.innerHTML = "✓";
+                    
+                    checkGem.appendChild(checkMark);
+                    checkWrapper.appendChild(checkGem);
+
+                    const textContainer = document.createElement('div');
+                    textContainer.className = "flex-grow";
+                    
+                    const title = document.createElement('h4');
+                    title.className = "quest-title font-bold text-white mb-1 text-sm md:text-base tracking-tight transition-colors";
+                    title.textContent = quest.title;
+
+                    const desc = document.createElement('p');
+                    desc.className = "quest-desc text-xs text-gray-400 leading-relaxed bg-[#0A0A0A] p-2 rounded mt-2 border border-[#222]";
+                    desc.textContent = quest.desc;
+
+                    textContainer.appendChild(title);
+                    textContainer.appendChild(desc);
+                    
+                    card.appendChild(checkWrapper);
+                    card.appendChild(textContainer);
+                    questList.appendChild(card);
+                });
+
+                col.appendChild(questList);
+                container.appendChild(col);
+            });
+
+            updatePlayerProfile(completedQuests, totalQuests);
+        }
+
+        function toggleQuest(id, cardElement) {
+            const isCurrentlyCompleted = cardElement.classList.contains('quest-completed');
+            savedQuests[id] = !isCurrentlyCompleted;
+            localStorage.setItem('t1LimitlessPlannerData', JSON.stringify(savedQuests));
+            renderQuests(); 
+        }
+
+        function updatePlayerProfile(completed, total) {
+            const percentage = total === 0 ? 0 : Math.round((completed / total) * 100);
+            
+            document.getElementById('progress-text').textContent = `${completed} / ${total} CLEAR`;
+            document.getElementById('exp-percentage').textContent = `${percentage}%`;
+            document.getElementById('exp-fill').style.width = `${percentage}%`;
+
+            let currentTier = tiers[0];
+            for (let i = tiers.length - 1; i >= 0; i--) {
+                if (completed >= tiers[i].threshold) {
+                    currentTier = tiers[i];
+                    break;
+                }
+            }
+
+            const tierNameEl = document.getElementById('tier-name');
+            tierNameEl.textContent = currentTier.name;
+            tierNameEl.style.color = currentTier.color;
+            
+            if (completed === total) {
+                tierNameEl.style.textShadow = `0 0 30px ${currentTier.color}`;
+                document.getElementById('exp-fill').style.background = currentTier.color;
+                tierNameEl.classList.add('animate-pulse');
+            } else {
+                tierNameEl.style.textShadow = 'none';
+                tierNameEl.classList.remove('animate-pulse');
+                document.getElementById('exp-fill').style.background = ''; 
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', renderQuests);
+// --- [NEW] 바론 버프(정부지원사업) 메모장 로직 ---
+        const govLinkInput = document.getElementById('govLinkInput');
+        const btnAddGovLink = document.getElementById('btnAddGovLink');
+        const govLinkList = document.getElementById('govLinkList');
+
+        // 로컬스토리지에서 불러오기 (기본값 세팅)
+        let govLinks = JSON.parse(localStorage.getItem('t1GovLinksData')) || [
+            { id: 1, text: "마곡 크리에이터미디어 콤플렉스 (최대 6천)" },
+            { id: 2, text: "1인 창조기업 지원센터 입주 노리기" }
+        ];
+
+        function renderGovLinks() {
+            govLinkList.innerHTML = '';
+            govLinks.forEach(link => {
+                const li = document.createElement('li');
+                li.className = "flex justify-between items-start group";
+                
+                const span = document.createElement('span');
+                span.className = "break-all pr-2";
+                // http로 시작하면 클릭 가능한 링크로 변환!
+                if(link.text.startsWith('http')) {
+                    span.innerHTML = `• <a href="${link.text}" target="_blank" class="text-[#D4AF37] hover:underline">${link.text}</a>`;
+                } else {
+                    span.innerHTML = `• ${link.text}`;
+                }
+
+                // 삭제 버튼
+                const delBtn = document.createElement('button');
+                delBtn.className = "text-[#E3002B] opacity-0 group-hover:opacity-100 transition-opacity text-xs font-bold px-1";
+                delBtn.textContent = "X";
+                delBtn.onclick = () => {
+                    govLinks = govLinks.filter(l => l.id !== link.id);
+                    saveAndRenderGovLinks();
+                };
+
+                li.appendChild(span);
+                li.appendChild(delBtn);
+                govLinkList.appendChild(li);
+            });
+        }
+
+        function saveAndRenderGovLinks() {
+            localStorage.setItem('t1GovLinksData', JSON.stringify(govLinks));
+            renderGovLinks();
+        }
+
+        // 추가 버튼 클릭 이벤트
+        btnAddGovLink.addEventListener('click', () => {
+            const text = govLinkInput.value.trim();
+            if(!text) return;
+            govLinks.push({ id: Date.now(), text: text });
+            govLinkInput.value = '';
+            saveAndRenderGovLinks();
+        });
+
+        // 엔터키 입력 이벤트
+        govLinkInput.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') btnAddGovLink.click();
+        });
+
+        // 초기 화면에 그려주기
+        renderGovLinks();
+
+        // --- [NEW] 조커 픽(신규 아이디어) 리스트 관리 로직 ---
+        const jokerTitleInput = document.getElementById('jokerTitleInput');
+        const jokerDescInput = document.getElementById('jokerDescInput');
+        const btnAddJoker = document.getElementById('btnAddJoker');
+        const jokerList = document.getElementById('jokerList');
+
+        // 로컬스토리지에서 불러오기 (없으면 빈 배열)
+        let jokerPicks = JSON.parse(localStorage.getItem('t1JokerPicksData')) || [];
+
+        function renderJokerPicks() {
+            jokerList.innerHTML = '';
+            
+            if (jokerPicks.length === 0) {
+                jokerList.innerHTML = '<div class="col-span-1 md:col-span-3 text-gray-600 text-xs italic text-center py-10 border border-dashed border-[#222] rounded">아직 등록된 조커 픽이 없어. 너의 번뜩이는 아이디어를 추가해 봐!</div>';
+                return;
+            }
+
+            jokerPicks.forEach(pick => {
+                const card = document.createElement('div');
+                // 핵심 픽과 동일한 카드 디자인 적용!
+                card.className = "content-card border border-[#333] border-t-4 border-t-[#00A896] p-6 rounded-lg h-full flex flex-col relative group bg-[#141414]";
+                
+                // 삭제 버튼 (마우스 오버 시 우측 상단에 등장)
+                const delBtn = document.createElement('button');
+                delBtn.className = "absolute top-4 right-4 text-[#E3002B] opacity-0 group-hover:opacity-100 transition-opacity text-xs font-bold px-2 py-1 bg-black border border-[#333] rounded hover:border-[#E3002B] hover:bg-[#E3002B] hover:text-white flex-shrink-0 z-10";
+                delBtn.textContent = "삭제";
+                delBtn.onclick = () => {
+                    jokerPicks = jokerPicks.filter(p => p.id !== pick.id);
+                    saveAndRenderJokerPicks();
+                };
+
+                // 조커픽 아이콘
+                const iconDiv = document.createElement('div');
+                iconDiv.className = "text-3xl mb-4";
+                iconDiv.textContent = "🃏";
+
+                // 타이틀
+                const titleH3 = document.createElement('h3');
+                titleH3.className = "text-xl font-bold text-white mb-2 pr-10"; // 삭제 버튼 공간 확보
+                titleH3.textContent = pick.title;
+
+                // 내용
+                const descDiv = document.createElement('div');
+                descDiv.className = "text-sm text-gray-400 flex-grow space-y-2 whitespace-pre-wrap leading-relaxed";
+                descDiv.textContent = pick.desc;
+
+                card.appendChild(delBtn);
+                card.appendChild(iconDiv);
+                card.appendChild(titleH3);
+                card.appendChild(descDiv);
+                jokerList.appendChild(card);
+            });
+        }
+
+        function saveAndRenderJokerPicks() {
+            localStorage.setItem('t1JokerPicksData', JSON.stringify(jokerPicks));
+            renderJokerPicks();
+        }
+
+        // 아이디어 추가 버튼 클릭 이벤트
+        btnAddJoker.addEventListener('click', () => {
+            const title = jokerTitleInput.value.trim() || '미제 타이틀';
+            const desc = jokerDescInput.value.trim();
+            if(!desc) return;
+            
+            jokerPicks.push({ id: Date.now(), title: title, desc: desc });
+            jokerTitleInput.value = '';
+            jokerDescInput.value = '';
+            saveAndRenderJokerPicks();
+        });
+
+        // 텍스트 영역에서 Ctrl+Enter 누르면 추가되게 설정
+        jokerDescInput.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                btnAddJoker.click();
+            }
+        });
+
+        // 초기 화면에 조커 픽 그려주기
+        renderJokerPicks();
+
+    </script>
+</body>
+</html>
